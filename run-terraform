@@ -175,9 +175,7 @@ confirm_proceed () {
     fi
 }
 
-# -- Command line arguments  --------------------------------------------------
-
-expect_argument () {
+verify_set () {
     local arg_value="${1}"
     local message="${2}"
     if [[ -z "${arg_value}" ]]; then
@@ -251,12 +249,12 @@ validate_common_infra_code () {
     fi
 }
 
-validate_command_line_args () {
-    debug "Validating command line arguments"
+validate_command_options () {
+    debug "Validating command options"
 
-    expect_argument "${group}" "Required 'group' option has not been set"
-    expect_argument "${command}" "Required 'command' option has not been set"
-    expect_argument "${aws_profile}" "Required 'profile' option has not been set"
+    verify_set "${group}" "Required 'group' option has not been set"
+    verify_set "${command}" "Required 'command' option has not been set"
+    verify_set "${aws_profile}" "Required 'profile' option has not been set"
 
     validate_group
     validate_terraform_command
@@ -388,6 +386,13 @@ configure_terraform () {
     export_terraform_env_var "state_bucket" "${state_bucket}"
 }
 
+initialise_command_options () {
+    if [[ -n ${AWS_PROFILE} ]]; then aws_profile="${AWS_PROFILE}"; fi
+    if [[ -n ${COMMAND} ]]; then command="${COMMAND}"; fi
+    if [[ -n ${COMMAND_ARGS} ]]; then command_args="${COMMAND_ARGS}"; fi
+    if [[ -n ${GROUP} ]]; then group="${GROUP}"; fi
+}
+
 initialise_terraform () {
     local current_workspace=$(terraform workspace show)
 
@@ -443,8 +448,9 @@ show_terraform_config () {
 main () {
     initialise_logging
 
+    initialise_command_options
     parse_command_line_args "${@}"
-    validate_command_line_args
+    validate_command_options
 
     export AWS_PROFILE="${aws_profile}"
 
