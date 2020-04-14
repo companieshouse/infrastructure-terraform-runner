@@ -14,6 +14,8 @@ RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscli
 
 COPY run-terraform /usr/local/bin/run-terraform
 
+RUN chmod 0755 /usr/local/bin/run-terraform
+
 WORKDIR /terraform-code
 
 ENTRYPOINT ["/usr/local/bin/run-terraform"]
