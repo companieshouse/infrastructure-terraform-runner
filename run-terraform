@@ -175,9 +175,7 @@ confirm_proceed () {
     fi
 }
 
-# -- Command line arguments  --------------------------------------------------
-
-expect_argument () {
+verify_set () {
     local arg_value="${1}"
     local message="${2}"
     if [[ -z "${arg_value}" ]]; then
@@ -251,12 +249,12 @@ validate_common_infra_code () {
     fi
 }
 
-validate_command_line_args () {
-    debug "Validating command line arguments"
+validate_command_options () {
+    debug "Validating command options"
 
-    expect_argument "${group}" "Required 'group' option has not been set"
-    expect_argument "${command}" "Required 'command' option has not been set"
-    expect_argument "${aws_profile}" "Required 'profile' option has not been set"
+    verify_set "${group}" "Required 'group' option has not been set"
+    verify_set "${command}" "Required 'command' option has not been set"
+    verify_set "${aws_profile}" "Required 'profile' option has not been set"
 
     validate_group
     validate_terraform_command
@@ -316,10 +314,10 @@ parse_command_line_args () {
 
     command_args="$*"
 
-    debug "Parsed group name: '${group}'"
-    debug "Parsed terraform command: '${command}'"
-    debug "Parsed AWS CLI profile name: '${aws_profile}'"
-    debug "Parsed terraform command arguments: '${command_args}'"
+    debug "Parsed group name: '${group}' from argument"
+    debug "Parsed terraform command: '${command}' from argument"
+    debug "Parsed AWS CLI profile name: '${aws_profile}' from argument"
+    debug "Parsed terraform command arguments: '${command_args}' from argument"
 
     if [[ -n ${environment} ]]; then
         debug "Parsed environment name: '${environment}'"
@@ -388,6 +386,28 @@ configure_terraform () {
     export_terraform_env_var "state_bucket" "${state_bucket}"
 }
 
+parse_environment_options () {
+    if [[ -n ${aws_profile} && -n ${AWS_PROFILE} ]]; then
+        aws_profile="${AWS_PROFILE}"
+        debug "Parsed AWS CLI profile name: '${aws_profile}' from environment variable"
+    fi
+
+    if [[ -n ${command} && -n ${COMMAND} ]]; then
+        command="${COMMAND}"
+        debug "Parsed terraform command: '${command}' from environment variable"
+    fi
+
+    if [[ -n ${command_args} && -n ${COMMAND_ARGS} ]]; then
+        command_args="${COMMAND_ARGS}"
+        debug "Parsed terraform command arguments: '${command_args}' from environment variable"
+    fi
+
+    if [[ -n ${group} && -n ${GROUP} ]]; then
+        group="${GROUP}"
+        debug "Parsed group name: '${group}' from environment variable"
+    fi
+}
+
 initialise_terraform () {
     local current_workspace=$(terraform workspace show)
 
@@ -444,7 +464,9 @@ main () {
     initialise_logging
 
     parse_command_line_args "${@}"
-    validate_command_line_args
+    parse_environment_options
+
+    validate_command_options
 
     export AWS_PROFILE="${aws_profile}"
 
