@@ -314,10 +314,10 @@ parse_command_line_args () {
 
     command_args="$*"
 
-    debug "Parsed group name: '${group}'"
-    debug "Parsed terraform command: '${command}'"
-    debug "Parsed AWS CLI profile name: '${aws_profile}'"
-    debug "Parsed terraform command arguments: '${command_args}'"
+    debug "Parsed group name: '${group}' from argument"
+    debug "Parsed terraform command: '${command}' from argument"
+    debug "Parsed AWS CLI profile name: '${aws_profile}' from argument"
+    debug "Parsed terraform command arguments: '${command_args}' from argument"
 
     if [[ -n ${environment} ]]; then
         debug "Parsed environment name: '${environment}'"
@@ -386,11 +386,26 @@ configure_terraform () {
     export_terraform_env_var "state_bucket" "${state_bucket}"
 }
 
-initialise_command_options () {
-    if [[ -n ${AWS_PROFILE} ]]; then aws_profile="${AWS_PROFILE}"; fi
-    if [[ -n ${COMMAND} ]]; then command="${COMMAND}"; fi
-    if [[ -n ${COMMAND_ARGS} ]]; then command_args="${COMMAND_ARGS}"; fi
-    if [[ -n ${GROUP} ]]; then group="${GROUP}"; fi
+parse_environment_options () {
+    if [[ -n ${aws_profile} && -n ${AWS_PROFILE} ]]; then
+        aws_profile="${AWS_PROFILE}"
+        debug "Parsed AWS CLI profile name: '${aws_profile}' from environment variable"
+    fi
+
+    if [[ -n ${command} && -n ${COMMAND} ]]; then
+        command="${COMMAND}"
+        debug "Parsed terraform command: '${command}' from environment variable"
+    fi
+
+    if [[ -n ${command_args} && -n ${COMMAND_ARGS} ]]; then
+        command_args="${COMMAND_ARGS}"
+        debug "Parsed terraform command arguments: '${command_args}' from environment variable"
+    fi
+
+    if [[ -n ${group} && -n ${GROUP} ]]; then
+        group="${GROUP}"
+        debug "Parsed group name: '${group}' from environment variable"
+    fi
 }
 
 initialise_terraform () {
@@ -448,8 +463,9 @@ show_terraform_config () {
 main () {
     initialise_logging
 
-    initialise_command_options
     parse_command_line_args "${@}"
+    parse_environment_options
+
     validate_command_options
 
     export AWS_PROFILE="${aws_profile}"
