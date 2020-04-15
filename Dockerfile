@@ -12,8 +12,10 @@ RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscli
     rm -rf /tmp/aws && \
     rm -f /tmp/awscliv2.zip
 
-COPY run-terraform /usr/local/bin/run-terraform
+COPY create-profile /usr/local/bin/create-profile
+RUN chmod 0755 /usr/local/bin/create-profile
 
+COPY run-terraform /usr/local/bin/run-terraform
 RUN chmod 0755 /usr/local/bin/run-terraform
 
 WORKDIR /terraform-code
