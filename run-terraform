@@ -320,7 +320,7 @@ parse_command_line_args () {
     debug "Parsed terraform command arguments: '${command_args}' from argument"
 
     if [[ -n ${environment} ]]; then
-        debug "Parsed environment name: '${environment}'"
+        debug "Parsed environment name: '${environment}' from argument"
     fi
 }
 
@@ -387,24 +387,29 @@ configure_terraform () {
 }
 
 parse_environment_options () {
-    if [[ -n ${aws_profile} && -n ${AWS_PROFILE} ]]; then
+    if [[ -z ${aws_profile} && -n ${AWS_PROFILE} ]]; then
         aws_profile="${AWS_PROFILE}"
         debug "Parsed AWS CLI profile name: '${aws_profile}' from environment variable"
     fi
 
-    if [[ -n ${command} && -n ${COMMAND} ]]; then
+    if [[ -z ${command} && -n ${COMMAND} ]]; then
         command="${COMMAND}"
         debug "Parsed terraform command: '${command}' from environment variable"
     fi
 
-    if [[ -n ${command_args} && -n ${COMMAND_ARGS} ]]; then
+    if [[ -z ${command_args} && -n ${COMMAND_ARGS} ]]; then
         command_args="${COMMAND_ARGS}"
         debug "Parsed terraform command arguments: '${command_args}' from environment variable"
     fi
 
-    if [[ -n ${group} && -n ${GROUP} ]]; then
+    if [[ -z ${group} && -n ${GROUP} ]]; then
         group="${GROUP}"
         debug "Parsed group name: '${group}' from environment variable"
+    fi
+
+    if [[ -z ${environment} && -n ${ENVIRONMENT} ]]; then
+        environment="${ENVIRONMENT}"
+        debug "Parsed environment name: '${environment}' from environment variable"
     fi
 }
 
