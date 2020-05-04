@@ -1,6 +1,6 @@
 FROM centos:centos8
 
-ARG PLATFORM_TOOLS_VERSION=1.1.0
+ARG PLATFORM_TOOLS_VERSION=1.1.1
 
 RUN yum install -y git unzip
 
