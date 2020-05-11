@@ -1,8 +1,8 @@
 FROM centos:centos8
 
-ARG PLATFORM_TOOLS_VERSION=1.1.2
+ARG PLATFORM_TOOLS_VERSION=1.1.3
 
-RUN yum install -y git unzip
+RUN yum install -y git zip unzip
 
 RUN curl https://releases.hashicorp.com/terraform/0.12.9/terraform_0.12.9_linux_amd64.zip -o /tmp/terraform_0.12.9_linux_amd64.zip && \
     unzip /tmp/terraform_0.12.9_linux_amd64.zip -d /usr/local/bin && \
