@@ -1,6 +1,6 @@
 FROM centos:centos8
 
-RUN yum install -y git zip unzip
+RUN yum install -y git zip unzip jq
 
 RUN curl https://releases.hashicorp.com/terraform/0.12.9/terraform_0.12.9_linux_amd64.zip -o /tmp/terraform_0.12.9_linux_amd64.zip && \
     unzip /tmp/terraform_0.12.9_linux_amd64.zip -d /usr/local/bin && \
