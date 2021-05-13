@@ -1,10 +1,15 @@
 FROM centos:centos8
 
-RUN yum install -y git zip unzip jq
+RUN yum install -y git zip unzip jq openssl
 
-RUN curl https://releases.hashicorp.com/terraform/0.12.9/terraform_0.12.9_linux_amd64.zip -o /tmp/terraform_0.12.9_linux_amd64.zip && \
-    unzip /tmp/terraform_0.12.9_linux_amd64.zip -d /usr/local/bin && \
-    rm -rf /tmp/terraform_0.12.9_linux_amd64.zip
+## Grab certs chain in case we're sitting behind a proxy
+RUN echo -n | openssl s_client -showcerts -connect releases.hashicorp.com:443 -servername releases.hashicorp.com 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /root/certschain.pem &&\
+    cp /root/certschain.pem /etc/pki/ca-trust/source/anchors/ &&\
+    update-ca-trust
+
+RUN curl https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip -o /tmp/terraform_0.12.31_linux_amd64.zip && \
+    unzip /tmp/terraform_0.12.31_linux_amd64.zip -d /usr/local/bin && \
+    rm -rf /tmp/terraform_0.12.31_linux_amd64.zip
 
 RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip && \
     unzip /tmp/awscliv2.zip -d /tmp && \
