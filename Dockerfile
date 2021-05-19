@@ -1,6 +1,9 @@
 FROM centos:centos8
 
-RUN yum install -y git zip unzip jq
+RUN yum install -y git zip unzip jq openssl
+
+RUN curl http://wpad.internal.ch/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websense.internal.ch.pem && \
+    update-ca-trust
 
 RUN curl https://releases.hashicorp.com/terraform/0.13.7/terraform_0.13.7_linux_amd64.zip -o /tmp/terraform_0.13.7_linux_amd64.zip && \
     unzip /tmp/terraform_0.13.7_linux_amd64.zip -d /usr/local/bin && \
