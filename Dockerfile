@@ -1,10 +1,15 @@
 FROM centos:centos8
 
-RUN yum install -y git zip unzip jq
+ARG TF_RELEASE=0.13.7
 
-RUN curl https://releases.hashicorp.com/terraform/0.13.4/terraform_0.13.4_linux_amd64.zip -o /tmp/terraform_0.13.4_linux_amd64.zip && \
-    unzip /tmp/terraform_0.13.4_linux_amd64.zip -d /usr/local/bin && \
-    rm -rf /tmp/terraform_0.13.4_linux_amd64.zip
+RUN yum install -y git zip unzip jq openssl
+
+RUN curl http://wpad.internal.ch/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websense.internal.ch.pem && \
+    update-ca-trust
+
+RUN curl https://releases.hashicorp.com/terraform/${TF_RELEASE}/terraform_${TF_RELEASE}_linux_amd64.zip -o /tmp/terraform_${TF_RELEASE}_linux_amd64.zip && \
+    unzip /tmp/terraform_${TF_RELEASE}_linux_amd64.zip -d /usr/local/bin && \
+    rm -rf /tmp/terraform_${TF_RELEASE}_linux_amd64.zip
 
 RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip && \
     unzip /tmp/awscliv2.zip -d /tmp && \
