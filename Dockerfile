@@ -3,7 +3,7 @@ FROM amazonlinux:2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG PLATFORM_TOOLS_VERSION="1.0.12"
-ARG TF_VERSIONS="0.12.31 0.13.7 0.15.5 1.0.11 1.1.9"
+ARG TF_VERSIONS="0.12.31 0.13.7 1.3.3"
 ARG TF_ARCHIVE_STORE="/opt"
 
 RUN yum install -y \
