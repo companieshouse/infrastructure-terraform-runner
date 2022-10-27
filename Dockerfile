@@ -31,6 +31,7 @@ RUN rpm --import http://yum-repository.platform.aws.chdev.org/RPM-GPG-KEY-platfo
     yum clean all
 
 COPY /resources/tf_install.sh /tf_install.sh
+COPY /resources/entrypoint.sh /entrypoint.sh
 
 RUN /tf_install.sh "${TF_VERSIONS}" "${TF_ARCHIVE_STORE}" && \
     rm -f /tf_install.sh
@@ -42,4 +43,4 @@ RUN yum -y erase \
 
 WORKDIR /terraform-code
 
-ENTRYPOINT ["/usr/bin/run-terraform"]
+ENTRYPOINT ["/entrypoint.sh"]
