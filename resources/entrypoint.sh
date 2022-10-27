@@ -15,4 +15,4 @@ fi
 echo "Extracting Terraform ${TF_RUNNER_VERSION}"
 unzip ${TF_ARCHIVE} -d /usr/local/bin/
 
-/usr/bin/run-terraform
+/usr/bin/run-terraform $@
