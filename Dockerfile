@@ -5,6 +5,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG PLATFORM_TOOLS_VERSION="1.0.12"
 ARG TF_VERSIONS="0.12 0.13 1.3"
 ARG TF_ARCHIVE_STORE="/opt"
+ENV TF_ARCHIVE_STORE=${TF_ARCHIVE_STORE}
 
 RUN yum install -y \
     git \

@@ -6,7 +6,7 @@ if [[ -z ${TF_RUNNER_VERSION} ]]; then
     TF_RUNNER_VERSION="0.12"
 fi
 
-TF_ARCHIVE=$(find /opt -name "terraform_${TF_RUNNER_VERSION}*.zip" -print)
+TF_ARCHIVE=$(find ${TF_ARCHIVE_STORE} -name "terraform_${TF_RUNNER_VERSION}*.zip" -print)
 if [[ ${TF_ARCHIVE} == "" ]]; then
   log-output error "Unsupported terraform version: ${TF_RUNNER_VERSION}"
   exit 1
