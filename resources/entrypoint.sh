@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ -z $TF_RUNNER_VERSION ]]; then
+if [[ -z ${TF_RUNNER_VERSION} ]]; then
     TF_RUNNER_VERSION="0.12"
 fi
 
