@@ -12,6 +12,10 @@ if [[ ${TF_ARCHIVE} == "" ]]; then
   exit 1
 fi
 
-unzip -q ${TF_ARCHIVE} -d ${TF_BIN_PATH}/
-
-/usr/bin/run-terraform "$@"
+if [[ $UID -ne 0 ]]; then
+  sudo -E unzip -q ${TF_ARCHIVE} -d ${TF_BIN_PATH}/
+  sudo -E /usr/bin/run-terraform "$@"
+else
+  unzip -q ${TF_ARCHIVE} -d ${TF_BIN_PATH}/
+  /usr/bin/run-terraform "$@"
+fi

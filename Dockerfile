@@ -5,7 +5,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG PLATFORM_TOOLS_VERSION="1.0.12"
 ARG TF_VERSIONS="0.12 0.13 1.3"
 ARG TF_ROOT_PATH="/terraform"
-ARG TF_BIN_PATH="${TF_ROOT_PATH}/bin"
+ARG TF_BIN_PATH="/usr/bin"
 ARG TF_USER="tfrunner"
 
 ENV TF_ROOT_PATH=${TF_ROOT_PATH}
@@ -16,6 +16,7 @@ RUN yum install -y \
     jq \
     openssl \
     sha256sum \
+    sudo \
     unzip \
     wget \
     zip && \
@@ -26,7 +27,7 @@ RUN echo | openssl s_client -showcerts -servername websenseproxy.internal.ch -co
 
 RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip && \
     unzip -q /tmp/awscliv2.zip -d /tmp && \
-    /tmp/aws/install && \
+    /tmp/aws/install --bin-dir /usr/bin && \
     rm -rf /tmp/aws && \
     rm -f /tmp/awscliv2.zip
 
@@ -38,11 +39,11 @@ RUN rpm --import http://yum-repository.platform.aws.chdev.org/RPM-GPG-KEY-platfo
 
 COPY /resources/tf_install.sh /tf_install.sh
 COPY /resources/entrypoint.sh /entrypoint.sh
+COPY /resources/tfrunner.sudoers /etc/sudoers.d/tfrunner
 
 RUN useradd --uid 1000 --create-home --shell /bin/bash ${TF_USER} && \
-    mkdir -p ${TF_BIN_PATH} && \
-    /tf_install.sh "${TF_VERSIONS}" "${TF_ROOT_PATH}" && \
-    chown -R ${TF_USER}:${TF_USER} ${TF_ROOT_PATH}/
+    mkdir -p ${TF_ROOT_PATH} && \
+    /tf_install.sh "${TF_VERSIONS}" "${TF_ROOT_PATH}"
 
 RUN yum -y erase \
     sha256sum \
@@ -50,12 +51,6 @@ RUN yum -y erase \
     yum clean all && \
     rm -f /tf_install.sh
 
-USER ${TF_USER}
-
-RUN printf "[safe]\n\tdirectory = /home/${TF_USER}/src\n" > /home/${TF_USER}/.gitconfig
-
-ENV PATH=${TF_BIN_PATH}:$PATH
-
-WORKDIR /home/${TF_USER}
+WORKDIR /terraform-code
 
 ENTRYPOINT ["/entrypoint.sh"]
