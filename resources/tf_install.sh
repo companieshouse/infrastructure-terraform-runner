@@ -3,7 +3,7 @@
 set -e
 
 VERSIONS=$1
-TF_ARCHIVE_STORE=$2
+TF_ROOT_PATH=$2
 RELEASE_URL="https://releases.hashicorp.com/terraform"
 RELEASE_HTML=$(echo | curl -s "${RELEASE_URL}" 2>/dev/null)
 
@@ -33,6 +33,6 @@ for VERSION in $VERSIONS; do
         exit 1
     fi
 
-    mv ${TF_ARCHIVE_FILE} ${TF_ARCHIVE_STORE}/
+    mv ${TF_ARCHIVE_FILE} ${TF_ROOT_PATH}/
     rm ${TF_SHASUMS_FILE}
 done
