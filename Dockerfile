@@ -17,7 +17,7 @@ RUN yum install -y \
     zip && \
     yum clean all
 
-RUN echo | openssl s_client -showcerts -servername websenseproxy.internal.ch -connect websenseproxy.internal.ch:443 2>/dev/null | openssl x509 -inform pem -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.internal.ch.pem && \
+RUN curl http://192.168.60.37/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.internal.ch.pem && \
     update-ca-trust
 
 RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip && \
