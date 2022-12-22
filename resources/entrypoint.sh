@@ -14,6 +14,7 @@ fi
 
 if [[ $UID -ne 0 ]]; then
   sudo -E unzip -q ${TF_ARCHIVE} -d ${TF_BIN_PATH}/
+  sudo -E chown -R tfrunner:tfrunner /home/tfrunner/
   sudo -E /usr/bin/run-terraform "$@"
 else
   unzip -q ${TF_ARCHIVE} -d ${TF_BIN_PATH}/
