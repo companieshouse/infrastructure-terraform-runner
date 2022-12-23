@@ -16,7 +16,9 @@ if [[ $UID -ne 0 ]]; then
     sudo unzip -q ${TF_ARCHIVE} -d ${TF_BIN_PATH}/
     sudo cp -aR /root/.aws /home/tfrunner/.aws
     sudo cp -aR /root/.ssh /home/tfrunner/.ssh
-    sudo chown -R tfrunner:tfrunner /home/tfrunner/ /src
+    sudo cp -aR /src /home/tfrunner/src
+    sudo chown -R tfrunner:tfrunner /home/tfrunner/
+    pushd /home/tfrunner/src > /dev/null
 else
     unzip -q ${TF_ARCHIVE} -d ${TF_BIN_PATH}/
 fi
