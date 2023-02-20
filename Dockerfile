@@ -15,9 +15,9 @@ ENV TF_BIN_PATH=${TF_BIN_PATH}
 RUN yum install -y \
     git \
     jq \
-    nscd \
     openssl \
     sha256sum \
+    shadow-utils \
     sudo \
     unzip \
     useradd \
