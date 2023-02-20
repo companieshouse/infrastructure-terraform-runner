@@ -2,6 +2,7 @@ FROM amazonlinux:2
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+ARG BUILD_ENV=""
 ARG PLATFORM_TOOLS_VERSION="1.0.12"
 ARG TF_VERSIONS="0.12 0.13 1.3"
 ARG TF_ROOT_PATH="/terraform"
@@ -22,7 +23,7 @@ RUN yum install -y \
     zip && \
     yum clean all
 
-RUN curl http://192.168.60.37/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.internal.ch.pem && \
+RUN if [[ "${BUILD_ENV}" == "" ]]; then curl http://192.168.60.37/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.internal.ch.pem; fi && \
     update-ca-trust
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip" -o /tmp/awscliv2.zip && \
