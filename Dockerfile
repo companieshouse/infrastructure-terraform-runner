@@ -23,7 +23,7 @@ RUN yum install -y \
     zip && \
     yum clean all
 
-RUN if [[ "${BUILD_ENV}" == "" ]]; then curl http://192.168.60.37/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.internal.ch.pem; fi && \
+RUN echo "${BUILD_ENV}"; if [[ "${BUILD_ENV}" == "" ]]; then curl http://192.168.60.37/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.internal.ch.pem; fi && \
     update-ca-trust
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip" -o /tmp/awscliv2.zip && \
