@@ -25,7 +25,7 @@ RUN yum install -y \
 RUN curl http://192.168.60.37/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.internal.ch.pem && \
     update-ca-trust
 
-RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip && \
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip" -o /tmp/awscliv2.zip && \
     unzip -q /tmp/awscliv2.zip -d /tmp && \
     /tmp/aws/install --bin-dir /usr/bin && \
     rm -rf /tmp/aws && \
@@ -37,9 +37,9 @@ RUN rpm --import http://yum-repository.platform.aws.chdev.org/RPM-GPG-KEY-platfo
     yum install -y platform-tools-terraform-$PLATFORM_TOOLS_VERSION && \
     yum clean all
 
-COPY /resources/tf_install.sh /tf_install.sh
-COPY /resources/entrypoint.sh /entrypoint.sh
-COPY /resources/tfrunner.sudoers /etc/sudoers.d/tfrunner
+COPY resources/tf_install.sh /tf_install.sh
+COPY resources/entrypoint.sh /entrypoint.sh
+COPY resources/tfrunner.sudoers /etc/sudoers.d/tfrunner
 
 RUN useradd --uid 1000 --create-home --shell /bin/bash ${TF_USER} && \
     mkdir -p ${TF_ROOT_PATH} && \

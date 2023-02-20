@@ -7,6 +7,19 @@ TF_ROOT_PATH=$2
 RELEASE_URL="https://releases.hashicorp.com/terraform"
 RELEASE_HTML=$(echo | curl -s "${RELEASE_URL}" 2>/dev/null)
 
+SYS_ARCH="$(arch)"
+case ${SYS_ARCH} in
+    x86_64)
+        TF_ARCH="amd64"
+        ;;
+    aarch64)
+        TF_ARCH="arm64"
+        ;;
+    *)
+        echo "Error: Unknown architecture"
+        exit 1
+esac
+
 pushd /tmp > /dev/null 2>&1
 
 for VERSION in $VERSIONS; do
@@ -17,7 +30,7 @@ for VERSION in $VERSIONS; do
     if [[ $TF_LATEST_RELEASE_HTML =~ $TF_RELEASE_REGEX ]]; then
         TF_RELEASE=${BASH_REMATCH[1]}
         echo "Found release: ${TF_RELEASE}"
-        TF_ARCHIVE_FILE="terraform_${TF_RELEASE}_linux_amd64.zip"
+        TF_ARCHIVE_FILE="terraform_${TF_RELEASE}_linux_${TF_ARCH}.zip"
         TF_SHASUMS_FILE="terraform_${TF_RELEASE}_SHA256SUMS"
     else
         echo "Unable to determine release for version $VERSION"
