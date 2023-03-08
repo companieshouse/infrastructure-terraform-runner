@@ -1,2 +1,2 @@
-# infrastructure-terraform-runner-multi
-Provides a Docker image capable of running playbooks for multiple versions of Terraform
+# infrastructure-terraform-runner-legacy
+Provides a Docker image capable of running Terraform 0.11 codebases
