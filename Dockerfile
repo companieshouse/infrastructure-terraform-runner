@@ -1,10 +1,10 @@
-FROM centos:centos8
+FROM amazonlinux:2
 
 ARG TF_RELEASE=0.12.31
 
 RUN yum install -y git zip unzip jq openssl
 
-RUN curl http://wpad.internal.ch/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websense.internal.ch.pem && \
+RUN curl http://192.168.60.37/websenseproxy_A.cer --output - 2>/dev/null | openssl x509 -inform der -outform pem -out /etc/pki/ca-trust/source/anchors/websense.internal.ch.pem && \
     update-ca-trust
 
 RUN curl https://releases.hashicorp.com/terraform/${TF_RELEASE}/terraform_${TF_RELEASE}_linux_amd64.zip -o /tmp/terraform_${TF_RELEASE}_linux_amd64.zip && \
