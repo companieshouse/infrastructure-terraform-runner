@@ -15,6 +15,7 @@ RUN yum install -y \
     git \
     jq \
     openssl \
+    rsync \
     sha256sum \
     sudo \
     unzip \
