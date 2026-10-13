@@ -2,7 +2,7 @@ FROM amazonlinux:2
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-ARG JQ_VERSION="1.8.1"
+ARG JQ_VERSION="1.8.2"
 ARG PLATFORM_TOOLS_VERSION="1.1.3"
 ARG TARGETARCH
 ARG TF_VERSIONS="0.12 0.13 1.3 1.9 1.14"
@@ -60,6 +60,7 @@ RUN yum -y erase \
     yum clean all && \
     rm -f /tf_install.sh
 
+USER tfrunner
 WORKDIR /terraform-code
 
 ENTRYPOINT ["/entrypoint.sh"]
