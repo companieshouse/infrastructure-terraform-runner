@@ -2,7 +2,7 @@ FROM amazonlinux:2
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-ARG JQ_VERSION="1.8.1"
+ARG JQ_VERSION="1.8.2"
 ARG PLATFORM_TOOLS_VERSION="1.1.3"
 ARG TARGETARCH
 ARG TF_VERSIONS="0.12 0.13 1.3 1.9 1.14"
@@ -12,6 +12,16 @@ ARG TF_USER="tfrunner"
 
 ENV TF_ROOT_PATH=${TF_ROOT_PATH}
 ENV TF_BIN_PATH=${TF_BIN_PATH}
+
+RUN d=/etc/pki/ca-trust/source/blocklist; \
+        if [ ! -d "$d" ]; then d=/etc/pki/ca-trust/source/blacklist; fi && \
+    trust extract --overwrite --format=pem-bundle \
+        --filter='pkcs11:object=Comodo%20AAA%20Services%20root;type=cert' \
+        "$d/Comodo_AAA_Services_root.pem" && \
+    trust extract --overwrite --format=pem-bundle \
+        --filter='pkcs11:object=emSign%20ECC%20Root%20CA%20-%20G3;type=cert' \
+        "$d/emSign_ECC_Root_CA_-_G3.pem" && \
+    update-ca-trust
 
 RUN yum update -y && \
     yum install -y \
