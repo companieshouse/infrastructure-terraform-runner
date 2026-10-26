@@ -52,13 +52,6 @@ install_proxy_certificates() {
         certs_installed=1
     fi
 
-    if [[ $(curl -s "http://192.168.60.37/websenseproxy_2025.cer" -o /dev/null -w "%{http_code}") -eq 200 ]]; then
-        log-output debug "Installing Websense proxy certificate"
-        sudo curl "http://192.168.60.37/websenseproxy_2025.cer" --output - 2>/dev/null | \
-            sudo openssl x509 -inform pem -outform pem -out /etc/pki/ca-trust/source/anchors/websenseproxy.pem
-        certs_installed=1
-    fi
-
     if [[ $certs_installed -eq 1 ]]; then
         log-output debug "Updating CA trust stores"
         sudo update-ca-trust
