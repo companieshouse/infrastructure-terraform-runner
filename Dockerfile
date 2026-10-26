@@ -23,8 +23,8 @@ RUN d=/etc/pki/ca-trust/source/blocklist; \
     "$d/emSign_ECC_Root_CA_-_G3.pem" && \
     update-ca-trust
 
-RUN yum --setopt=sslverify=false update -y && \
-    yum --setopt=sslverify=false install -y \
+RUN yum update -y && \
+    yum install -y \
         git-2.47.3 \
         openssl-1.0.2k \
         rsync-3.1.2 \
@@ -37,21 +37,21 @@ RUN yum --setopt=sslverify=false update -y && \
 
 WORKDIR /tmp
 
-RUN curl -ksL "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-${TARGETARCH}" -o "jq-linux-${TARGETARCH}" && \
-    curl -ksL "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/sha256sum.txt" -o sha256sum.txt && \
+RUN curl -sL "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-${TARGETARCH}" -o "jq-linux-${TARGETARCH}" && \
+    curl -sL "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/sha256sum.txt" -o sha256sum.txt && \
     grep "jq-linux-${TARGETARCH}" sha256sum.txt | sha256sum --check --status && \
     chmod +x "jq-linux-${TARGETARCH}" && \
     mv "jq-linux-${TARGETARCH}" "/usr/bin/jq" && \
     rm sha256sum.txt
 
-RUN curl -ks "https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip" -o "awscliv2.zip" && \
+RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip" -o "awscliv2.zip" && \
     unzip -q awscliv2.zip && \
     /tmp/aws/install --bin-dir /usr/bin && \
     rm -rf aws/ awscliv2.zip
 
 RUN rpm --import http://yum-repository.platform.aws.chdev.org/RPM-GPG-KEY-platform-noarch && \
     yum-config-manager --add-repo http://yum-repository.platform.aws.chdev.org/platform-noarch.repo && \
-    yum --setopt=sslverify=false install -y \
+    yum install -y \
         platform-tools-terraform-${PLATFORM_TOOLS_VERSION} && \
     yum clean all
 
